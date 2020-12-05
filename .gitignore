@@ -1,0 +1,3 @@
+*.o
+*.out
+.ccls-cache
