@@ -18,7 +18,8 @@
 
 template <typename T=int>
 struct Tree {
-    Tree() = default;
+    //Tree() = default;
+    Tree();
     Tree(const Tree &) = delete;
     explicit Tree(const T &elem);
 
@@ -36,6 +37,7 @@ struct Tree {
     void MiddleOrder() const;
     void PostOrder() const;
 
+    void Print(const char* format, ...) const;
 
 private:
     struct Node {
@@ -65,8 +67,6 @@ private:
      * print function
      */
     void Print(Node *node) const;
-    void Print(const char* format, ...) const;
-
 };
 
 //#ifdef __cplusplus

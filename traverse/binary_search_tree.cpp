@@ -18,18 +18,21 @@
 using std::stack;
 
 template<typename T>
+Tree<T>::Tree() : root_(nullptr) {
+    Print("Tree constructor\n");
+}
+
+template<typename T>
 Tree<T>::Tree(const T &item) {
-    if (root_ == nullptr) {
-        this->root_ = new Node(item);
+    this->root_ = new Node(item);
 
-        assert(root_ != nullptr);
-    }
-
+    assert(root_ != nullptr);
 }
 
 template<typename T>
 Tree<T>::~Tree() {
     Clear();
+    root_ = nullptr;
 }
 
 
@@ -56,13 +59,19 @@ void Tree<T>::Insert(const T &elem) {
     }
 
     elem_node = new Node(elem);
-    /* find the place for insert */
-    if (pre_node->value > elem) {
-        assert(pre_node->left == nullptr);
-        pre_node->left = elem_node;
+
+    if (pre_node) {
+        /* find the place for insert */
+        if (pre_node->value > elem) {
+            assert(pre_node->left == nullptr);
+            pre_node->left = elem_node;
+        } else {
+            assert(pre_node->right == nullptr);
+            pre_node->right = elem_node;
+        }
     } else {
-        assert(pre_node->right == nullptr);
-        pre_node->right = elem_node;
+        /* root_ is null, just insert node as a root */
+        root_ = elem_node;
     }
 
 exit:
@@ -93,6 +102,7 @@ void Tree<T>::Remove(const T &elem) {
 template<typename T>
 void Tree<T>::Clear() {
     Clear_l(root_);
+    root_ = nullptr;
 }
 
 template<typename T>
@@ -130,7 +140,7 @@ template<typename T>
 void Tree<T>::MiddleOrder_l(Node *node) const {
     stack<Node*>  stack;
 
-    while(node == nullptr && stack.empty()) {
+    while(node != nullptr || !stack.empty()) {
         while (node != nullptr) {
             stack.push(node);
             node = node->left;
@@ -157,7 +167,7 @@ void Tree<T>::PostOrder_l(Node *node) const {
     stack<Node*>  stack;
     Node *last_visit_node = nullptr;
 
-    while(node == nullptr && stack.empty()) {
+    while(node != nullptr || !stack.empty()) {
         while (node != nullptr) {
             stack.push(node);
             node = node->left;
@@ -166,11 +176,12 @@ void Tree<T>::PostOrder_l(Node *node) const {
         if (!stack.empty()) {
             node = stack.top();
 
-            if (node->right == nullptr 
-                    || last_visit_node == node) {
+            if (node->right == nullptr
+                    || last_visit_node == node->right) {
                 Print(node);
                 last_visit_node = node;
                 stack.pop();
+                node = nullptr;
             } else {
                 node = node->right;
             }
@@ -219,7 +230,10 @@ typename Tree<T>::Node* Tree<T>::Search_l(const T &elem, Node* node) const {
             return Search_l(elem, node->right);
         }
     }
+
+    return nullptr;
 }
+
 template<typename T>
 void Tree<T>::Remove_l(const T &elem, Node* &node) {
     if (node == nullptr)
