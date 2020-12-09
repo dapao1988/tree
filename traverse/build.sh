@@ -1,0 +1,10 @@
+#!/bin/bash
+OUTPUT_FOLDER="build"
+if [ ! -d ${OUTPUT_FOLDER} ]; then
+   mkdir -p ${OUTPUT_FOLDER}
+fi
+
+pushd ${OUTPUT_FOLDER}
+cmake .. -DCMAKE_INSTALL_PREFIX=. -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_COMPILE_COMMANDS=YES -DEXPORT_SYMBOL_DEFAULT=ON
+make -j8 && make install
+popd
